@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Cargar sesión de estudio</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post">
+  <label>Materia
+    <select name="materia" required>
+      {% for m in materias %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Minutos
+    <input type="number" name="minutos" min="1" required>
+  </label>
+  <label>Concentración (1 a 5)
+    <input type="number" name="concentracion" min="1" max="5" required>
+  </label>
+  <label>Tema
+    <input type="text" name="tema" placeholder="Ej: Funciones exponenciales">
+  </label>
+  <button type="submit">Guardar sesión</button>
+</form>
+{% endblock %}

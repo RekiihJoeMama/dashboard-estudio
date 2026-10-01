@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Últimas sesiones</h1>
+{% if sesiones %}
+<table>
+  <thead>
+    <tr><th>Fecha</th><th>Materia</th><th>Min</th><th>Conc.</th><th>Tema</th></tr>
+  </thead>
+  <tbody>
+    {% for s in sesiones %}
+    <tr>
+      <td>{{ s.fecha }}</td>
+      <td>{{ s.materia }}</td>
+      <td>{{ s.minutos }}</td>
+      <td>{{ s.concentracion }}</td>
+      <td>{{ s.tema }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="vacio">Todavía no cargaste ninguna sesión.</p>
+{% endif %}
+{% endblock %}
