@@ -1,5 +1,33 @@
 {% extends "base.html" %}
 {% block contenido %}
+
+{% if resumen %}
+<h1>Resumen</h1>
+<section class="tarjetas">
+  <div class="tarjeta"><span>Tiempo total</span><strong>{{ resumen.total_txt }}</strong></div>
+  <div class="tarjeta"><span>Días activos</span><strong>{{ resumen.dias_activos }}</strong></div>
+  <div class="tarjeta"><span>Racha actual</span><strong>{{ resumen.racha }} d</strong></div>
+  <div class="tarjeta"><span>Mejor día</span><strong>{{ resumen.mejor_dia }}</strong><small>{{ resumen.mejor_dia_txt }}</small></div>
+</section>
+
+<section class="graficos">
+  <div class="grafico ancho">
+    <h2>Horas por día (últimos 14 días)</h2>
+    <div class="lienzo"><canvas id="gDias"></canvas></div>
+  </div>
+  <div class="grafico">
+    <h2>Horas por materia</h2>
+    <div class="lienzo"><canvas id="gMaterias"></canvas></div>
+  </div>
+  {% if resumen.graficos.conc_labels %}
+  <div class="grafico">
+    <h2>Concentración promedio</h2>
+    <div class="lienzo"><canvas id="gConc"></canvas></div>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
 <h1>Últimas sesiones</h1>
 {% if sesiones %}
 <table>
@@ -21,4 +49,46 @@
 {% else %}
 <p class="vacio">Todavía no cargaste ninguna sesión.</p>
 {% endif %}
+
+{% if resumen %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+  const G = {{ resumen.graficos | tojson }};
+  const css = getComputedStyle(document.documentElement);
+  const rosa = css.getPropertyValue('--rosa').trim();
+  Chart.defaults.color = css.getPropertyValue('--texto-suave').trim();
+  Chart.defaults.borderColor = '#3a2a44';
+  const base = { responsive: true, maintainAspectRatio: false };
+
+  new Chart(document.getElementById('gDias'), {
+    type: 'bar',
+    data: {
+      labels: G.dias_labels,
+      datasets: [{ label: 'Horas', data: G.dias_horas, backgroundColor: rosa, borderRadius: 6 }]
+    },
+    options: { ...base, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('gMaterias'), {
+    type: 'doughnut',
+    data: {
+      labels: G.mat_labels,
+      datasets: [{ data: G.mat_horas, backgroundColor: G.mat_colores, borderWidth: 0 }]
+    },
+    options: base
+  });
+
+  if (G.conc_labels.length) {
+    new Chart(document.getElementById('gConc'), {
+      type: 'bar',
+      data: {
+        labels: G.conc_labels,
+        datasets: [{ label: 'Promedio', data: G.conc_vals, backgroundColor: G.conc_colores, borderRadius: 6 }]
+      },
+      options: { ...base, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 5 } } }
+    });
+  }
+</script>
+{% endif %}
+
 {% endblock %}

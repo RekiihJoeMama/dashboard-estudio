@@ -68,3 +68,36 @@ tr:not(:last-child) td { border-bottom: 1px solid #3a2a44; }
 
 .error { background: #4a1f33; color: #ffb3c9; padding: 0.8rem 1rem; border-radius: 8px; }
 .vacio { color: var(--texto-suave); }
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: var(--tarjeta);
+  border-left: 4px solid var(--rosa);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+.tarjeta span, .tarjeta small { color: var(--texto-suave); font-size: 0.85rem; }
+.tarjeta strong { color: var(--dorado); font-size: 1.6rem; }
+
+.graficos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.grafico { background: var(--tarjeta); border-radius: 12px; padding: 1rem 1.2rem; }
+.grafico.ancho { grid-column: 1 / -1; }
+.grafico h2 { margin: 0 0 0.8rem; font-size: 1rem; color: var(--rosa); }
+.lienzo { position: relative; height: 260px; }
+
+@media (max-width: 700px) {
+  .graficos { grid-template-columns: 1fr; }
+}
