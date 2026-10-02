@@ -28,6 +28,17 @@ def asegurar_csv():
         with open(RUTA_CSV, "w", newline="", encoding="utf-8") as f:
             csv.writer(f).writerow(COLUMNAS)
 
+def agregar_fila(fila):
+    """Agrega una fila al CSV, asegurando que el archivo termine en salto de línea."""
+    asegurar_csv()
+    with open(RUTA_CSV, "rb+") as f:
+        f.seek(0, os.SEEK_END)
+        if f.tell() > 0:
+            f.seek(-1, os.SEEK_END)
+            if f.read(1) not in (b"\n", b"\r"):
+                f.write(b"\n")
+    with open(RUTA_CSV, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow(fila)
 
 def formatear(minutos):
     """90 -> '1h 30m', 120 -> '2h', 25 -> '25m'."""
@@ -129,13 +140,10 @@ def cargar():
         elif not 1 <= concentracion <= 5:
             error = "La concentración va de 1 a 5."
         else:
-            asegurar_csv()
-            with open(RUTA_CSV, "a", newline="", encoding="utf-8") as f:
-                csv.writer(f).writerow(
-                    [date.today().isoformat(), materia, minutos, concentracion, tema]
-                )
+            agregar_fila(
+                [date.today().isoformat(), materia, minutos, concentracion, tema]
+            )
             return redirect(url_for("index"))
-
     return render_template("cargar.html", materias=MATERIAS, error=error)
 
 
